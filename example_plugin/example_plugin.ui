@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>ExampleGui</class>
+  <widget class="QWidget" name="ExampleGui">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>400</width>
+        <height>300</height>
+      </rect>
+    </property>
+    <property name="windowTitle">
+      <string>Webinar Example | v1.0</string>
+    </property>
+    <property name="group" stdset="0">
+      <string>Scripts</string>
+    </property>
+    <property name="styleSheet">
+      <string>
+        QLabel:disabled {
+          color: #909090
+        }
+      </string>
+    </property>
+
+    <layout class="QVBoxLayout" name="mainLayout">
+
+      <item>
+        <widget class="QPushButton" name="_render_snapshots_local">
+          <property name="text">
+            <string>Render Snapshots Local</string>
+          </property>
+        </widget>
+      </item>
+
+      <item>
+        <widget class="QPushButton" name="_render_snapshots_plugin">
+          <property name="text">
+            <string>Render Snapshots Plugin</string>
+          </property>
+        </widget>
+      </item>
+
+      <!--Horizontal Line-->
+      <item>
+        <widget class="Line" name="line">
+          <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+          </property>
+        </widget>
+      </item>
+
+      <!--Camera Position-->
+      <item>
+        <widget class="QLabel" name="_camera_label">
+          <property name="text">
+            <string>Camera Position:</string>
+          </property>
+        </widget>
+      </item>
+
+    </layout>
+  </widget>
+
+  <resources/>
+
+  <connections/>
+</ui>

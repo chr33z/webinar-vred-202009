@@ -7,10 +7,11 @@ import distutils.dir_util
 import re
 import sys
 import hashlib
+import unittest
 
 obfuscatePlugin = False
 obfuscateModules = False
-runVRED = True
+runVRED = False
 
 # versions of vred for that the plugin should be installed
 installVersions = ['13.0']
@@ -56,7 +57,7 @@ def obfuscatePluginCode():
     fileObf = os.path.join(pluginPath(version), 'example_plugin_obfuscated.py')
 
     os.system(
-        r'pyminifier --obfuscate-import-methods --obfuscate-builtins --replacement-length=3 {0} >> {1}'.format(fileOrig, fileObf))
+        r'pyminify --obfuscate-import-methods --obfuscate-builtins --replacement-length=3 {0} >> {1}'.format(fileOrig, fileObf))
     os.system(r'del example_plugin.py')
     os.system(r'rename example_plugin_obfuscated.py example_plugin.py')
 
@@ -76,7 +77,6 @@ def obfuscatePluginCode():
     os.system(r'del example_plugin.py')
     os.system(r'rename example_plugin_obfuscated.py example_plugin.py')
 
-
 def obfuscateModuleCode():
     print("[build] Obfuscate plugin modules...")
     moduleFiles = os.listdir(modulesPath(version))
@@ -84,7 +84,7 @@ def obfuscateModuleCode():
     for file in moduleFiles:
         print("[build] Obfuscate plugin modules: " + str(file))
 
-        if not file.startswith('example_plugin_') or not file.endswith('.py'):
+        if not file.endswith('.py'):
             continue
 
         fileOrig = os.path.join(modulesPath(version), file)
@@ -92,7 +92,7 @@ def obfuscateModuleCode():
 
         # run obfuscator
         os.system(
-            'pyminifier --obfuscate-import-methods --obfuscate-builtins --replacement-length=3 %s >> %s' % (fileOrig, fileObf))
+            r'pyminify --obfuscate-import-methods --obfuscate-builtins --replacement-length=3 %s >> %s' % (fileOrig, fileObf))
         os.system('del %s' % (fileOrig))
         os.rename(fileObf, fileOrig)
 
@@ -113,9 +113,24 @@ def obfuscateModuleCode():
         os.system(r'del %s' % (fileOrig))
         os.rename(fileObf, fileOrig)
 
+def runUnitTests():
+    import unittest
+    loader = unittest.TestLoader()
+    start_dir = os.path.join(scriptPath, 'tests')
+    suite = loader.discover(start_dir)
+
+    runner = unittest.TextTestRunner()
+    res = runner.run(suite)
+
+    return res.wasSuccessful()
 
 # keep reference to script path
 scriptPath = developmentPath()
+
+print("[build] Run Unit Tests...")
+if not runUnitTests():
+    print("[Error][build] Unit tests failed...")
+    sys.exit(0)
 
 print("[build] Start deploying python plugin...")
 
@@ -156,4 +171,4 @@ if runVRED:
     print("[build] Run VRED...")
     subprocess.call(vredInstallation())
 
-sys.exit()
+sys.exit(0)
